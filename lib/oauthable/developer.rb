@@ -10,7 +10,8 @@ module Oauthable
         data = auth_hash.info
         {
             :email => data.email,
-            :name => data.name
+            :name => data.name,
+            :admin => true
         }
       end
 
