@@ -62,6 +62,11 @@ module Oauthable
         #    }
 
         data = auth_hash.extra.raw_info
+
+        # todo: find a way to make this ORM independent.
+        # :location_attributes should be :location and our neo4jhelpers should automatically rename when appropriate
+        # the first step though is in making it work at all ;-)
+
         attrs = {
             :fbid => data.id,
             :name => data.name,
@@ -69,7 +74,8 @@ module Oauthable
             :first_name => data.first_name,
             :last_name => data.last_name,
             :username => data.username,
-            :location => data.location,
+            :location_attributes => data.location,
+            :credentials => auth_hash.credentials,
             :gender => data.gender,
             :timezone => data.timezone,
             :locale => data.locale,

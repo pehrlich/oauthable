@@ -25,37 +25,34 @@ module Oauthable
         # https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
         # twitter doesn't include email.  We can't allow original logins from twitter, easily.
 
+        provider = auth_hash.provider
 
         # by putting current_user first, a difference in fb and registered email will prioritize ours
         unless user = current_user
 
           unless email = auth_hash.info.email
-            p "no email given by #{auth_hash.provider}"
-            raise "no email given by #{auth_hash.provider}"
+            p "no email given by #{provider}"
+            raise "no email given by #{provider}"
           end
 
           user = User.find_by(:email => email) ||
-              User.find_by(:facebook_email => email) || # todo: make language agnostic
+              User.find_by(:facebook_email => email) || # todo: make service agnostic
               User.new({:email => email, :password => SecureRandom.base64(10)})
         end
 
-        p "getting attributes #{auth_hash.provider} #{auth_hash}"
 
-        provider = auth_hash.provider
+        p "getting #{provider} attributes: #{auth_hash}"
+
 
         attrs = self.send("select_#{provider}_attributes", auth_hash)
         #attrs = select_oauth_attributes(auth_hash.provider, auth_hash.extra.raw_info)
 
-        p "Received connection info from #{provider}: #{attrs}"
-
         # don't overwrite existing attributes
+        # todo: array in model ::FB_OVERWRITE
         attrs.reject! { |k, v| user[k].present? }
 
 
-        # todo: find a way to re enable
-        #attrs["#{provider}_credentials"] = auth_hash.credentials
-
-        p "updating with attributes: #{attrs}"
+        p "updating with attributes from #{provider}: #{attrs}"
 
         user.update_attributes!(attrs) # raise an error on failure
 
