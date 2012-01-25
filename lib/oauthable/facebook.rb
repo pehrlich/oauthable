@@ -9,7 +9,6 @@ module Oauthable
           return nil
         end
 
-        #logger.warn "fb token expires: #{credentials['expires']}"
         p "fb token expires: #{credentials['expires']}"
 
         if (expires = credentials['expires']) && expires != false
@@ -68,14 +67,14 @@ module Oauthable
         # the first step though is in making it work at all ;-)
 
         attrs = {
+            :facebook_credentials => auth_hash.credentials,
             :fbid => data.id,
             :name => data.name,
             :facebook_email => data.email,
             :first_name => data.first_name,
             :last_name => data.last_name,
             :username => data.username,
-            :location_attributes => data.location,
-            :credentials => auth_hash.credentials,
+            :location => data.location,
             :gender => data.gender,
             :timezone => data.timezone,
             :locale => data.locale,
