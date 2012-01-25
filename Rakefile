@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "oauthable"
   gem.homepage = "http://github.com/pehrlich/oauthable"
   gem.license = "MIT"
-  gem.summary = %Q{generic omniauth callbacks}
-  gem.description = %Q{generic omniauth callbacks}
+  gem.summary = %Q{done omniauth callbacks}
+  gem.description = %Q{done omniauth callbacks}
   gem.email = "peter.i.ehrlich@gmail.com"
   gem.authors = ["Peter Ehrlich"]
   # dependencies defined in Gemfile

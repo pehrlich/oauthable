@@ -21,7 +21,7 @@ This is all you have to do:
     class UsersController < ApplicationController
     
       def omniauth_login
-        user = User.find_or_create_by_auth_hash(auth_hash)
+        user = User.find_or_create_by_auth_hash(request.env['omniauth.auth'])
         login(user)
         redirect_to '/'
       end
