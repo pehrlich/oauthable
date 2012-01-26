@@ -44,17 +44,18 @@ module Oauthable
         p "getting #{provider} attributes: #{auth_hash}"
 
 
-        attrs = self.send("select_#{provider}_attributes", auth_hash)
+        attributes = self.send("select_#{provider}_attributes", auth_hash)
         #attrs = select_oauth_attributes(auth_hash.provider, auth_hash.extra.raw_info)
 
-        # don't overwrite existing attributes
-        # todo: array in model ::FB_OVERWRITE
-        attrs.reject! { |k, v| user[k].present? }
+        updatable = [:facebook_credentials, :fb_verified, :facebook_email,
+                     :twitter_credentials]
+        updatable << self.OAUTH_UPDATABLE if defined? self.OAUTH_UPDATABLE
+        attributes.reject! { |key, val| user[key].present? && ( !updatable.include?(key) ) }
 
 
-        p "updating with attributes from #{provider}: #{attrs}"
+        p "updating with attributes from #{provider}: #{attributes}"
 
-        user.update_attributes!(attrs) # raise an error on failure
+        user.update_attributes!(attributes) # raise an error on failure
 
         user
       end
