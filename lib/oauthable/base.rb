@@ -11,6 +11,8 @@ module Oauthable
             self.fbid.present?
           when :twitter
             self.twid.present?
+          when :google
+            self.google_id.present?
         end
       end
 
@@ -19,45 +21,54 @@ module Oauthable
     module ClassMethods
 
       def find_or_create_by_auth_hash(auth_hash, current_user = nil)
-        # facebook email is stored in case different from user's email.  This will probably be extremely rare,
-        # only happens if associating account after manual registration
+        begin
+          # omniauth eats this exception. lame.
+          # exceptions only seem to get registered every other time.
 
-        # https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-        # twitter doesn't include email.  We can't allow original logins from twitter, easily.
+          # facebook email is stored in case different from user's email.  This will probably be extremely rare,
+          # only happens if associating account after manual registration
 
-        provider = auth_hash.provider
+          # https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
+          # twitter doesn't include email.  We can't allow original logins from twitter, easily.
 
-        # by putting current_user first, a difference in fb and registered email will prioritize ours
-        unless user = current_user
+          provider = auth_hash.provider
 
-          unless email = auth_hash.info.email
-            p "no email given by #{provider}"
-            raise "no email given by #{provider}"
+          p "getting #{provider} attributes: #{auth_hash}"
+
+          # by putting current_user first, a difference in fb and registered email will prioritize ours
+          unless user = current_user
+
+            unless email = auth_hash.info.email
+              p "no email given by #{provider}"
+              raise "no email given by #{provider}"
+            end
+
+            user = User.find_by(:email => email) ||
+                User.find_by(:facebook_email => email) || # todo: make service agnostic
+                User.new({:email => email, :password => SecureRandom.base64(10)})
           end
 
-          user = User.find_by(:email => email) ||
-              User.find_by(:facebook_email => email) || # todo: make service agnostic
-              User.new({:email => email, :password => SecureRandom.base64(10)})
+
+          attributes = self.send("select_#{provider}_attributes", auth_hash)
+
+          updatable = [:facebook_credentials, :fb_verified, :facebook_email,
+                       :twitter_credentials]
+          updatable.concat self::OAUTH_UPDATABLE if defined? self::OAUTH_UPDATABLE
+
+          attributes.reject! { |key, val| user[key].present? && (!updatable.include?(key)) }
+
+
+          p "updating with attributes from #{provider}:"
+          p attributes.inspect
+
+          user.update_attributes!(attributes) # raise an error on failure
+
+          user
+        rescue Exception => e
+          p "Exception in oauthable -- probably eaten, unfortunately, by omniauth"
+          p e.inspect
+          raise e
         end
-
-
-        p "getting #{provider} attributes: #{auth_hash}"
-
-
-        attributes = self.send("select_#{provider}_attributes", auth_hash)
-        #attrs = select_oauth_attributes(auth_hash.provider, auth_hash.extra.raw_info)
-
-        updatable = [:facebook_credentials, :fb_verified, :facebook_email,
-                     :twitter_credentials]
-        updatable << self.OAUTH_UPDATABLE if defined? self.OAUTH_UPDATABLE
-        attributes.reject! { |key, val| user[key].present? && ( !updatable.include?(key) ) }
-
-
-        p "updating with attributes from #{provider}: #{attributes}"
-
-        user.update_attributes!(attributes) # raise an error on failure
-
-        user
       end
 
 

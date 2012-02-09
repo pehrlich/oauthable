@@ -28,7 +28,8 @@ module Oauthable
     module ClassMethods
 
       def select_facebook_attributes(auth_hash)
-        #:provider => 'facebook',
+
+        #  :provider => 'facebook',
         #  :uid => '1234567',
         #  :info => {
         #    :nickname => 'jbloggs',
@@ -62,7 +63,7 @@ module Oauthable
         #      :updated_time => '2011-11-11T06:21:03+0000'
         #    }
 
-        data = auth_hash.extra.raw_info
+        raw_info = auth_hash.extra.raw_info
 
         # todo: find a way to make this ORM independent.
         # :location_attributes should be :location and our neo4jhelpers should automatically rename when appropriate
@@ -70,24 +71,24 @@ module Oauthable
 
         attrs = {
             :facebook_credentials => auth_hash.credentials,
-            :fbid => data.id,
-            :name => data.name,
-            :facebook_email => data.email,
-            :first_name => data.first_name,
-            :last_name => data.last_name,
-            :username => data.username,
-            :location => data.location,
-            :gender => data.gender,
-            :timezone => data.timezone,
-            :locale => data.locale,
-            :fb_verifed => data.verifed,
-            :photo_url => data.image,
+            :fbid => raw_info.id,
+            :name => raw_info.name,
+            :facebook_email => raw_info.email,
+            :first_name => raw_info.first_name,
+            :last_name => raw_info.last_name,
+            :username => raw_info.username,
+            :location => raw_info.location,
+            :gender => raw_info.gender,
+            :timezone => raw_info.timezone,
+            :locale => raw_info.locale,
+            :fb_verifed => raw_info.verifed,
+            :photo_url => auth_hash.info.image,
         }
 
         # permissions: user_birthday
-        #:born_on => data.birthday_date  #...
+        #:born_on => raw_info.birthday_date  #...
         # http://stackoverflow.com/questions/2720907/ruby-convert-string-to-date
-        attrs[:born_on] = Date.strptime(data.birthday, '%m/%d/%Y') if data.birthday
+        attrs[:born_on] = Date.strptime(raw_info.birthday, '%m/%d/%Y') if raw_info.birthday
 
         attrs
       end

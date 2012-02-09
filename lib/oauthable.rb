@@ -1,8 +1,11 @@
-require 'oauthable/railtie' if defined?(Rails)
-require 'oauthable/base' if defined?(Rails)
-require 'oauthable/facebook' if defined?(Rails)
-require 'oauthable/developer' if defined?(Rails)
+require 'oauthable/railtie'
 
+require 'oauthable/base'
+
+require 'oauthable/developer'
+require 'oauthable/facebook'
+require 'oauthable/twitter'
+require 'oauthable/google'
 
 # requirements of this gem
 # fb_graph (todo: become independent?)
