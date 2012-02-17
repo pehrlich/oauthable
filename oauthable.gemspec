@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/oauthable/google.rb",
     "lib/oauthable/railtie.rb",
     "lib/oauthable/twitter.rb",
+    "oauthable.gemspec",
     "test/helper.rb",
     "test/test_oauthable.rb"
   ]
