@@ -6,7 +6,7 @@ module Oauthable
     module InstanceMethods
 
       def connected?(provider)
-        case provider
+        case provider.to_sym
           when :facebook
             self.fbid.present?
           when :twitter
@@ -45,9 +45,13 @@ module Oauthable
 
             user = User.find_by(:email => email) ||
                 User.find_by(:facebook_email => email) || # todo: make service agnostic
-                User.new({:email => email, :password => SecureRandom.base64(10)})
+                User.new({:email => email, :password => SecureRandom.base64(11)})
+
           end
 
+          unless user.connected?(auth_hash.provider)
+            auth_hash[:initial_connection] = true
+          end
 
           attributes = self.send("select_#{provider}_attributes", auth_hash)
 

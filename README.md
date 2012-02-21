@@ -73,6 +73,9 @@ done!
 It probably can be made to work for active record as well.
 
 
+Also, oauthable lets you know if this is the first time someone has connected their account by setting
+auth_hash[:initial_connection] = true
+
 
 ## Contributing
 
@@ -80,10 +83,9 @@ It probably can be made to work for active record as well.
 Once you've made your great commits
 
 1. Fork
-1. Pull # > git clone git://whatever
-1. Push # > git push
-1. Pull request # github's GUI
-1. \# That's it!
+1. Pull
+1. Push
+1. Pull request
 
 
 
