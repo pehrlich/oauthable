@@ -3,19 +3,15 @@ module Oauthable
 
     extend ActiveSupport::Concern
 
-    module InstanceMethods
-
-      def connected?(provider)
-        case provider.to_sym
-          when :facebook
-            self.fbid.present?
-          when :twitter
-            self.twid.present?
-          when :google
-            self.google_id.present?
-        end
+    def connected?(provider)
+      case provider.to_sym
+        when :facebook
+          self.fbid.present?
+        when :twitter
+          self.twid.present?
+        when :google
+          self.google_id.present?
       end
-
     end
 
     module ClassMethods

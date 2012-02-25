@@ -3,27 +3,25 @@ module Oauthable
 
     extend ActiveSupport::Concern
 
-    module InstanceMethods
-      def fb_token
-        unless credentials = self['facebook_credentials']
-          return nil
-        end
-
-        p "fb token expires: #{credentials['expires']}"
-
-        if credentials['expires'] && credentials['expires_at'] > Time.now
-            # 1,327,928,400 > 1,327,945,000
-            # default two hour lifetime
-            # note: because a token exists doesn't mean its valid! users can log out.
-            # be sure to try/catch elsewhere in app
-            # see https://developers.facebook.com/blog/post/500/
-            logger.warn "Token has expired"
-            return nil
-        end
-        credentials['token']
+    def fb_token
+      unless credentials = self['facebook_credentials']
+        return nil
       end
 
+      p "fb token expires: #{credentials['expires']}"
+
+      if credentials['expires'] && credentials['expires_at'] > Time.now
+        # 1,327,928,400 > 1,327,945,000
+        # default two hour lifetime
+        # note: because a token exists doesn't mean its valid! users can log out.
+        # be sure to try/catch elsewhere in app
+        # see https://developers.facebook.com/blog/post/500/
+        logger.warn "Token has expired"
+        return nil
+      end
+      credentials['token']
     end
+
 
     module ClassMethods
 

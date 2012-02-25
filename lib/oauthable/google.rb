@@ -2,7 +2,6 @@ module Oauthable
   module Google
     extend ActiveSupport::Concern
 
-
     module ClassMethods
 
       def select_google_attributes(auth_hash)
