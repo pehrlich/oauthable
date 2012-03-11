@@ -4,13 +4,13 @@ module Oauthable
     extend ActiveSupport::Concern
 
     def fb_token
-      unless credentials = self['facebook_credentials']
+      unless credentials = self.facebook_credentials
         return nil
       end
 
-      p "fb token expires: #{credentials['expires']}"
+      p "fb token expires: #{credentials[:expires]}"
 
-      if credentials['expires'] && credentials['expires_at'] > Time.now
+      if credentials[:expires] && credentials[:expires_at] > Time.now
         # 1,327,928,400 > 1,327,945,000
         # default two hour lifetime
         # note: because a token exists doesn't mean its valid! users can log out.
@@ -19,7 +19,7 @@ module Oauthable
         logger.warn "Token has expired"
         return nil
       end
-      credentials['token']
+      credentials[:token]
     end
 
 
