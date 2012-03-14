@@ -8,15 +8,15 @@ module Oauthable
         return nil
       end
 
-      p "fb token expires: #{credentials[:expires]}"
+      p "fb token expires: #{credentials[:expires]}, #{credentials[:expires_at]}, #{Time.at credentials[:expires_at]}"
 
-      if credentials[:expires] && credentials[:expires_at] > Time.now
+      if credentials[:expires] && Time.at(credentials[:expires_at]) > Time.now
         # 1,327,928,400 > 1,327,945,000
         # default two hour lifetime
         # note: because a token exists doesn't mean its valid! users can log out.
         # be sure to try/catch elsewhere in app
         # see https://developers.facebook.com/blog/post/500/
-        logger.warn "Token has expired"
+        p "Token has expired"
         return nil
       end
       credentials[:token]
