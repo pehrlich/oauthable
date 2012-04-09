@@ -83,7 +83,7 @@ module Oauthable
             :websitex => info.website,
             :websitey => info.Website,
             :username => info.nickname,
-            :twitter_id => info.nickname,
+            :twitter_name => info.nickname,
             :twid => raw_info.id_str, # raw_info.id_str also valid¢
             :location_desc => info.location,
             :photo_url => info.image,
