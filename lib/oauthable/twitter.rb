@@ -2,8 +2,11 @@ module Oauthable
   module Twitter
     extend ActiveSupport::Concern
 
-
     module ClassMethods
+
+      def find_from_twitter(auth_hash)
+        self.find_by(twitter_id: auth_hash.info.nickname)
+      end
 
       ##<OmniAuth::AuthHash
       #
@@ -71,11 +74,16 @@ module Oauthable
 
       def select_twitter_attributes(auth_hash)
         info = auth_hash.info
+        p "reading auth hash info"
+        p info
         raw_info = auth_hash.extra.raw_info
         {
             :twitter_credentials => auth_hash[:credentials],
             :website => info['Website'],
+            :websitex => info.website,
+            :websitey => info.Website,
             :username => info.nickname,
+            :twitter_id => info.nickname,
             :twid => raw_info.id_str, # raw_info.id_str also valid¢
             :location_desc => info.location,
             :photo_url => info.image,

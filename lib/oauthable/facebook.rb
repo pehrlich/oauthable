@@ -23,6 +23,10 @@ module Oauthable
 
     module ClassMethods
 
+      def find_from_facebook(auth_hash)
+        self.find_by(fbid: auth_hash.uid)
+      end
+
       def select_facebook_attributes(auth_hash)
 
         #  :provider => 'facebook',

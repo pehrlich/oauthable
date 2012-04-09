@@ -29,23 +29,17 @@ module Oauthable
 
           provider = auth_hash.provider
 
-          p "getting #{provider} attributes: #{auth_hash}"
+          p "getting #{provider} attributes:"
+          p auth_hash
 
           # by putting current_user first, a difference in fb and registered email will prioritize ours
-          unless user = current_user
-
-            unless email = auth_hash.info.email
-              p "no email given by #{provider}"
-              raise "no email given by #{provider}"
+          unless user = (current_user || User.send("find_from_#{provider}".to_sym, auth_hash))
+            unless email = auth_hash.info.email && user = User.find_by(:email => email)
+              user = User.new({:email => email, :password => SecureRandom.base64(11)})
             end
-
-            user = User.find_by(:email => email) ||
-                User.find_by(:facebook_email => email) || # todo: make service agnostic
-                User.new({:email => email, :password => SecureRandom.base64(11)})
-
           end
 
-          unless user.connected?(auth_hash.provider)
+          unless user.connected?(provider)
             auth_hash[:initial_connection] = true
           end
 
