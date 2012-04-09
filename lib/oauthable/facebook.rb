@@ -8,7 +8,7 @@ module Oauthable
         return nil
       end
 
-      if credentials[:expires] and credentials[:expires_at] and (Time.at(credentials[:expires_at]) > Time.now)
+      if credentials[:expires] and credentials[:expires_at] and (Time.now > Time.at(credentials[:expires_at]))
         # 1,327,928,400 > 1,327,945,000
         # default two hour lifetime
         # note: because a token exists doesn't mean its valid! users can log out.
