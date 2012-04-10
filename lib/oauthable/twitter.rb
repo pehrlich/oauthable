@@ -79,9 +79,7 @@ module Oauthable
         raw_info = auth_hash.extra.raw_info
         {
             :twitter_credentials => auth_hash[:credentials],
-            :website => info['Website'],
-            :websitex => info.website,
-            :websitey => info.Website,
+            :website => info.urls['Website'], # could also use .url
             :username => info.nickname,
             :twitter_name => info.nickname,
             :twid => raw_info.id_str, # raw_info.id_str also valid¢

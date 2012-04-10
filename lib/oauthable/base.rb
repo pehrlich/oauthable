@@ -51,15 +51,14 @@ module Oauthable
 
           attributes.reject! { |key, val| user[key].present? && (!updatable.include?(key)) }
 
-
-          p "updating with attributes from #{provider}:"
+          p "Oauthable updating with attributes from #{provider}:"
           p attributes.inspect
 
           user.update_attributes!(attributes) # raise an error on failure
 
           user
         rescue Exception => e
-          p "Exception in oauthable -- probably eaten, unfortunately, by omniauth"
+          p "Exception in Oauthable -- probably eaten, unfortunately, by omniauth"
           p e.inspect
           raise e
         end
