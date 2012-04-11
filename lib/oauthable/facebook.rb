@@ -74,6 +74,7 @@ module Oauthable
             :fbid => raw_info.id,
             :name => raw_info.name,
             :facebook_email => raw_info.email,
+            :email => raw_info.email,
             :first_name => raw_info.first_name,
             :last_name => raw_info.last_name,
             :username => raw_info.username,
