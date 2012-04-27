@@ -69,6 +69,7 @@ module Oauthable
         # :location_attributes should be :location and our neo4jhelpers should automatically rename when appropriate
         # the first step though is in making it work at all ;-)
 
+        # todo: for unknown reasons, raw_info is sometimes 'false'
         attrs = {
             :facebook_credentials => auth_hash.credentials,
             :fbid => raw_info.id,
