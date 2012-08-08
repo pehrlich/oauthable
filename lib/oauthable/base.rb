@@ -1,6 +1,5 @@
 module Oauthable
   module Base
-
     extend ActiveSupport::Concern
 
     def connected?(provider)
@@ -29,12 +28,13 @@ module Oauthable
 
           provider = auth_hash.provider
 
-          p "getting #{provider} attributes:"
-          p auth_hash
+          #p "getting #{provider} attributes:"
+          #p auth_hash
 
           # by putting current_user first, a difference in fb and registered email will prioritize ours
+          # note: this doesn't currently catch "logged in as different user"...
           unless user = (current_user || User.send("find_from_#{provider}".to_sym, auth_hash))
-            unless email = auth_hash.info.email && user = User.find_by(:email => email)
+            unless (email = auth_hash.info.email) && (user = User.find_by(:email => email))
               user = User.new({:email => email, :password => SecureRandom.base64(11)})
             end
           end
@@ -45,14 +45,15 @@ module Oauthable
 
           attributes = self.send("select_#{provider}_attributes", auth_hash)
 
+          # update only some attributes
           updatable = [:facebook_credentials, :fb_verified, :facebook_email,
                        :twitter_credentials]
           updatable.concat self::OAUTH_UPDATABLE if defined? self::OAUTH_UPDATABLE
 
           attributes.reject! { |key, val| user[key].present? && (!updatable.include?(key)) }
 
-          p "Oauthable updating with attributes from #{provider}:"
-          p attributes.inspect
+          #p "Oauthable updating with attributes from #{provider}:"
+          #p attributes.inspect
 
           user.update_attributes!(attributes) # raise an error on failure
 

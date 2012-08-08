@@ -74,6 +74,8 @@ module Oauthable
             :facebook_credentials => auth_hash.credentials,
             :fbid => raw_info.id,
             :name => raw_info.name,
+            :fb_image_url => auth_hash.info.image,
+            :urls => auth_hash.info.urls,
             :facebook_email => raw_info.email,
             :email => raw_info.email,
             :first_name => raw_info.first_name,
@@ -84,7 +86,6 @@ module Oauthable
             :timezone => raw_info.timezone,
             :locale => raw_info.locale,
             :fb_verifed => raw_info.verifed,
-            :photo_url => auth_hash.info.image,
         }
 
         # permissions: user_birthday
